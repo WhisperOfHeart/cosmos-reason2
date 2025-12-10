@@ -1,0 +1,48 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+[project]
+name = "cosmos-reason2"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+  "cosmos-reason2-utils[inference,cu128_torch29]",
+]
+
+[project.optional-dependencies]
+quantize = ["llmcompressor"]
+cosmos-rl = ["cosmos-reason2-utils[cosmos-rl]"]
+
+[dependency-groups]
+dev = [
+    "pip-licenses>=5.5.0",
+    "pyrefly==0.42.3",
+    "pytest>=9.0.1",
+    "ruff==0.14.8",
+    "tomlkit>=0.13.3",
+]
+
+[tool.uv]
+override-dependencies = [
+  "numpy>=2"
+]
+
+[tool.uv.sources]
+cosmos-reason2-utils = { workspace = true }
+
+[tool.uv.workspace]
+members = [
+  "cosmos_reason2_utils",
+]
