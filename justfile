@@ -57,7 +57,7 @@ export-configs *args:
 # Sync jupytext notebooks
 [working-directory: 'examples/notebooks']
 notebooks-sync:
-  uv run jupytext --to ipynb *.py
+  uv run jupytext --sync *.ipynb
 
 # Run the docker container
 _docker build_args='' run_args='':
