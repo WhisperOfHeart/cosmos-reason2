@@ -28,6 +28,7 @@ ______________________________________________________________________
     - [Offline Inference](#offline-inference)
 - [Quantization](#quantization)
 - [Tutorials](#tutorials)
+- [Troubleshooting](#troubleshooting)
 - [Additional Resources](#additional-resources)
 - [License and Contact](#license-and-contact)
 
@@ -145,7 +146,7 @@ For deployment and batch inference, we recommend using [`vllm`](https://docs.vll
 
 #### Online Serving
 
-Start the server:
+Start the server in a separate terminal or a background process:
 
 ```shell
 vllm serve nvidia/Cosmos-Reason2-2B \
@@ -156,14 +157,14 @@ vllm serve nvidia/Cosmos-Reason2-2B \
   --port 8000
 ```
 
-Arguments:
+Optional arguments:
 
 * `--max-model-len 16384`: Maximum model length to avoid OOM. Recommended range: 8192 - 16384.
 * `--media-io-kwargs '{"video": {"num_frames": -1}}'`: Allow overriding FPS per sample.
 * `--reasoning-parser qwen3`: Parse reasoning trace.
 * `--port 8000`: Server port. Change if you encounter `Address already in use` errors.
 
-Wait a few minutes for the server to startup. Once complete, it will print `Application startup complete.`. Open a new terminal to run inference commands.
+Wait a few minutes for the server to startup. Once complete, it will print `Application startup complete.`.
 
 Caption a video ([sample output](assets/outputs/caption.log)):
 
@@ -177,15 +178,11 @@ Embodied reasoning with verbose output ([sample output](assets/outputs/embodied_
 cosmos-reason2-inference online -v --port 8000 -i prompts/embodied_reasoning.yaml --reasoning --images assets/sample.png
 ```
 
-To list available parameters:
+To list available arguments:
 
 ```shell
 cosmos-reason2-inference online --help
 ```
-
-Arguments:
-
-* `--model nvidia/Cosmos-Reason2-2B`: Model name or path.
 
 #### Offline Inference
 
@@ -195,11 +192,15 @@ Temporally caption a video and save the input frames to `outputs/temporal_locali
 cosmos-reason2-inference offline -v --max-model-len 16384 -i prompts/temporal_localization.yaml --videos assets/sample.mp4 --fps 4 -o outputs/temporal_localization
 ```
 
-To list available parameters:
+To list available arguments:
 
 ```shell
 cosmos-reason2-inference offline --help
 ```
+
+Common arguments:
+
+* `--model nvidia/Cosmos-Reason2-2B`: Model name or path.
 
 ## Quantization
 
@@ -211,24 +212,29 @@ For model quantization, we recommend using [llmcompressor](https://github.com/vl
 ./scripts/quantize.py -o /tmp/cosmos-reason2/checkpoints
 ```
 
-To list available parameters:
+To list available arguments:
 
 ```shell
 ./scripts/quantize.py --help
 ```
 
-Arguments:
+Common arguments:
 
 * `--model nvidia/Cosmos-Reason2-2B`: Model name or path.
 * `--precision fp4`: Precision to use for quantization.
 
 ## Tutorials
 
-* Post-Training
-  * [Cosmos-RL](examples/cosmos_rl/README.md)
+* [Notebooks](examples/notebooks/README.md)
+* [Cosmos-RL](examples/cosmos_rl/README.md)
+
+## Troubleshooting
+
+See [troubleshooting guide](docs/troubleshooting.md)
 
 ## Additional Resources
 
+* [Troubleshooting](docs/troubleshooting.md)
 * [Example prompts](prompts/README.md)
 * Cosmos-Reason2 is based on the Qwen3-VL architecture.
   * [Qwen3-VL Repository](https://github.com/QwenLM/Qwen3-VL)

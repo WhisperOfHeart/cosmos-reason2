@@ -21,7 +21,7 @@ run *args: _uv-sync
 
 # Setup the repository
 _pre-commit-install:
-  uv tool install -U pre-commit
+  uv tool install "pre-commit>=4.5.0"
   pre-commit install -c .pre-commit-config-base.yaml
 
 _pre-commit-base *args:
@@ -38,14 +38,16 @@ test: _uv-sync
   uv run --no-sync pytest -vv
 
 # Run pip-licenses
-_pip-licenses *args: _uv-sync
+_pip-licenses *args:
   #!/usr/bin/env bash
   set -euxo pipefail
-  temp_dir=$(mktemp -d)
-  uv venv --clear $temp_dir
-  python_path="$temp_dir/bin/python"
-  uv pip install -r requirements.txt --python $python_path
-  uv run --no-sync pip-licenses \
+  venv_dir="$(uv cache dir)/tmp"
+  mkdir -p "${venv_dir}"
+  venv_dir=$(mktemp -d -p "${venv_dir}")
+  uv venv --clear "$venv_dir"
+  python_path="$venv_dir/bin/python"
+  uv pip install --no-deps -r requirements.txt --python $python_path
+  uvx pip-licenses@5.5.0 \
     --python $python_path \
     --format=plain-vertical \
     --with-license-file \
@@ -53,8 +55,8 @@ _pip-licenses *args: _uv-sync
     --no-version \
     --with-urls \
     --output-file ATTRIBUTIONS.md \
-    --packages $(cat requirements.txt | cut -d '=' -f 1 | xargs) \
     {{args}}
+  rm -rf "$venv_dir"
 
 # Update the license
 license: _pip-licenses
@@ -62,7 +64,7 @@ license: _pip-licenses
 # Sync jupytext notebooks
 [working-directory: 'examples/notebooks']
 notebooks-sync:
-  uv run jupytext --sync *.ipynb
+  uv run jupytext --sync *.ipynb --pipe 'ruff format -'
 
 # Run the docker container
 _docker build_args='' run_args='':

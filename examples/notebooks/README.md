@@ -18,12 +18,13 @@ Install the package:
 ```shell
 cd examples/notebooks
 uv sync
+source .venv/bin/python
 ```
 
 Notebooks can be run as regular Python scripts:
 
 ```shell
-uv run python <notebook>.py
+python <notebook>.py
 ```
 
 Alternatively, they can be run as Jupyter notebooks using [VS Code](https://docs.astral.sh/uv/guides/integration/jupyter/#using-jupyter-from-vs-code).
