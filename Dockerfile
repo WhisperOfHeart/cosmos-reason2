@@ -62,14 +62,14 @@ RUN uv tool install wandb
 
 WORKDIR /workspace
 
+COPY . /workspace
+
+RUN chmod +x docker/entrypoint.sh
+
 # Install the project's dependencies using the lockfile and settings
 RUN echo cu${CUDA_VERSION} | cut -d. -f1,2 | tr -d . > /root/.cuda-name
 RUN --mount=type=cache,target=/root/.cache/uv \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    --mount=type=bind,source=.python-version,target=.python-version \
-    --mount=type=bind,source=cosmos_reason2_utils,target=cosmos_reason2_utils \
-    uv sync --locked --no-install-project --no-editable --extra=$(cat /root/.cuda-name)
+    uv sync --locked --extra=$(cat /root/.cuda-name)
 
 # Place executables in the environment at the front of the path
 ENV PATH="/workspace/.venv/bin:$PATH"
