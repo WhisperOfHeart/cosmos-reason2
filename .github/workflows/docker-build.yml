@@ -35,7 +35,9 @@ jobs:
 
       - name: Free disk space for build
         run: |
-          sudo rm -rf /usr/local/lib/android /opt/ghc /usr/local/share/boost /usr/share/dotnet /opt/hostedtoolcache/CodeQL
+          for path in /usr/local/lib/android /opt/ghc /usr/local/share/boost /usr/share/dotnet /opt/hostedtoolcache/CodeQL; do
+            sudo rm -rf "$path" || true
+          done
           sudo apt-get clean
           df -h
 
