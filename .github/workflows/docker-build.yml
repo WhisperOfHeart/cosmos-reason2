@@ -21,6 +21,9 @@ on:
       - codex/create-branch-and-build-docker-image
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 env:
   REGISTRY: docker.io
   IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/cosmos-reason2
