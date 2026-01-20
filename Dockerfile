@@ -66,10 +66,10 @@ COPY . /workspace
 
 RUN chmod +x docker/entrypoint.sh
 
-# Install the project's dependencies using the lockfile and settings
+# Install the project's dependencies using the lockfile settings
 RUN echo cu${CUDA_VERSION} | cut -d. -f1,2 | tr -d . > /root/.cuda-name
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked --no-install-project --no-editable --extra=$(cat /root/.cuda-name)
+    uv sync --no-install-project --no-editable --extra=$(cat /root/.cuda-name)
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv pip install --python /workspace/.venv/bin/python --no-deps .
 
