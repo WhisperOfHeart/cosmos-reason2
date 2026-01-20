@@ -33,6 +33,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Free disk space for build
+        run: |
+          for path in /usr/local/lib/android /opt/ghc /usr/local/share/boost /usr/share/dotnet /opt/hostedtoolcache/CodeQL; do
+            sudo rm -rf "$path" || true
+          done
+          sudo apt-get clean
+          df -h
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
