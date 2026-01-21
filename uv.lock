@@ -1116,8 +1116,8 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "cosmos-reason2-utils", editable = "cosmos_reason2_utils" },
-    { name = "cosmos-reason2-utils", extras = ["cu128-torch29"], marker = "extra == 'cu128'", editable = "cosmos_reason2_utils" },
-    { name = "cosmos-reason2-utils", extras = ["cu130-torch29"], marker = "extra == 'cu130'", editable = "cosmos_reason2_utils" },
+    { name = "cosmos-reason2-utils", extras = ["cu128-torch28"], marker = "extra == 'cu128'", editable = "cosmos_reason2_utils" },
+    { name = "cosmos-reason2-utils", extras = ["cu128-torch29"], marker = "extra == 'cu130'", editable = "cosmos_reason2_utils" },
 ]
 provides-extras = ["cu128", "cu130"]
 
