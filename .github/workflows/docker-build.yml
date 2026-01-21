@@ -45,9 +45,8 @@ jobs:
       - name: Update uv.lock if needed
         run: |
           uv lock
-          if ! git diff --exit-code uv.lock; then
-            echo "uv.lock was updated during workflow"
-            cat uv.lock > uv.lock.bak
+          if ! git diff --quiet uv.lock; then
+            echo "WARNING: uv.lock was updated during the workflow. Consider committing these changes to the repository."
           fi
 
       - name: Free disk space for build
