@@ -27,6 +27,7 @@ permissions:
 env:
   REGISTRY: docker.io
   IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/cosmos-reason2
+  UV_VERSION: "0.8.12"
 
 jobs:
   build-and-push:
@@ -39,12 +40,15 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v5
         with:
-          version: "0.8.12"
+          version: ${{ env.UV_VERSION }}
 
-      - name: Update uv.lock
+      - name: Update uv.lock if needed
         run: |
           uv lock
-          git diff --exit-code uv.lock || echo "uv.lock was updated"
+          if ! git diff --exit-code uv.lock; then
+            echo "uv.lock was updated during workflow"
+            cat uv.lock > uv.lock.bak
+          fi
 
       - name: Free disk space for build
         run: |
