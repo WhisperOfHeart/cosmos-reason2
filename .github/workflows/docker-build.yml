@@ -23,6 +23,7 @@ on:
 
 permissions:
   contents: read
+  actions: write
 
 env:
   REGISTRY: docker.io
@@ -51,11 +52,37 @@ jobs:
 
       - name: Free disk space for build
         run: |
-          for path in /usr/local/lib/android /opt/ghc /usr/local/share/boost /usr/share/dotnet /opt/hostedtoolcache/CodeQL; do
+          echo "=== Disk space before cleanup ==="
+          df -h
+          echo "=== Docker system info before cleanup ==="
+          docker system df || true
+          
+          echo "=== Removing large unnecessary directories ==="
+          for path in /usr/local/lib/android /opt/ghc /usr/local/share/boost /usr/share/dotnet /opt/hostedtoolcache/CodeQL /usr/local/.ghcup /usr/share/swift /opt/az; do
             sudo rm -rf "$path" || true
           done
+          
+          echo "=== Cleaning apt cache ==="
           sudo apt-get clean
+          sudo apt-get autoremove -y
+          sudo rm -rf /var/lib/apt/lists/*
+          
+          echo "=== Pruning Docker system ==="
+          docker system prune -af --volumes || true
+          
+          echo "=== Removing unused kernels and headers ==="
+          sudo apt-get remove -y '^aspnetcore-.*' || true
+          sudo apt-get remove -y '^dotnet-.*' --fix-missing || true
+          sudo apt-get remove -y '^llvm-.*' --fix-missing || true
+          sudo apt-get remove -y '^php.*' --fix-missing || true
+          sudo apt-get remove -y '^mongodb-.*' --fix-missing || true
+          sudo apt-get remove -y '^mysql-.*' --fix-missing || true
+          sudo apt-get remove -y azure-cli google-chrome-stable firefox powershell mono-devel libgl1-mesa-dri --fix-missing || true
+          
+          echo "=== Final disk space ==="
           df -h
+          echo "=== Docker system info after cleanup ==="
+          docker system df || true
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -83,3 +110,6 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: false
