@@ -84,6 +84,20 @@ jobs:
           echo "=== Docker system info after cleanup ==="
           docker system df || true
 
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.8.12"
+
+      - name: Update uv.lock if needed
+        run: |
+          if ! uv lock --check; then
+            echo "Lockfile needs updating, running uv lock..."
+            uv lock
+          else
+            echo "Lockfile is up-to-date"
+          fi
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
